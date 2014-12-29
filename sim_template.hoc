@@ -1,0 +1,83 @@
+objref CVODE
+CVODE = new CVode()
+CVODE.active(1)
+CVODE.atol(1e-5)
+
+printf("In sim_temp\n")
+objref fp_soma
+fp_soma = new File()
+
+//synapse活性化時間の設定
+objref upper_syn_stimulator
+objref lower_syn_stimulator
+
+upper_syn_stimulator = new NetStim(.5)
+upper_syn_stimulator.number = 1
+//upper_syn_stimulator.start = UPPER_SYN_ACTIVATE_TIME
+
+lower_syn_stimulator = new NetStim(.5)
+lower_syn_stimulator.number = 1
+//lower_syn_stimulator.start = LOWER_SYN_ACTIVATE_TIME
+
+objref connection[N_upperSyn + N_lowerSyn]
+
+for i = 0, N_upperSyn - 1{
+   upperSyn[i].tau1 = tau1
+   upperSyn[i].tau2 = tau2
+   connection[i] = new NetCon(upper_syn_stimulator,upperSyn[i],0,0,g_syn)
+}
+
+for i = 0, N_lowerSyn - 1{
+   lowerSyn[i].tau1 = tau1
+   lowerSyn[i].tau2 = tau2
+   connection[i + N_upperSyn] = new NetCon(lower_syn_stimulator,lowerSyn[i],0,0,g_syn)
+}
+
+//dt = 0.025
+
+objref V_vect
+V_vect = new Vector()
+V_vect.record(&soma.v(0.5))
+
+strdef name
+
+EPSP_ERROR = 0
+
+for i = 0, 3 {
+    
+    if(i == 0){
+	name = output_file_u
+    }else if(i == 1){
+	name = output_file_l
+    }else if(i == 2){
+	name = output_file_ul
+    }else{
+	name = output_file_lu
+    }
+    
+    fp_soma.wopen(name)
+    
+    upper_syn_stimulator.start = UPPER_SYN_ACTIVATE_TIME.x[i]
+    lower_syn_stimulator.start = LOWER_SYN_ACTIVATE_TIME.x[i]
+    
+    finitialize(V_INIT)              //finitializeでtest.modのINITIALが行われるらしい
+    fcurrent()
+    
+    //synの中の変数はsyn.aとかでアクセスできる
+    if(EPSP_ERROR == 0){
+	while(t < tstop){
+	    fp_soma.printf("%f %f\n",t,soma.v(0.5))
+	    fadvance()
+	}
+    }else{
+	fp_soma.printf("%s\n",EPSP_ERROR_MESSAGE)
+    }
+    
+    if(V_vect.max() - V_INIT < MIN_EPSP){
+	EPSP_ERROR = 1
+    }
+    
+    printf("output -> %s\n",name)
+    
+    fp_soma.close()
+}

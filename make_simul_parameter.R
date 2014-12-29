@@ -1,0 +1,1 @@
+../Gausian/make_simul_parameter.R

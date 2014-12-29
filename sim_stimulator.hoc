@@ -1,0 +1,11 @@
+//synapse活性化時間の設定
+objref upper_syn_stimulator
+objref lower_syn_stimulator
+
+upper_syn_stimulator = new NetStim(.5)
+upper_syn_stimulator.number = 1
+upper_syn_stimulator.start = 50 //デフォルト
+
+lower_syn_stimulator = new NetStim(.5)
+lower_syn_stimulator.number = 1
+lower_syn_stimulator.start = 80 //デフォルト

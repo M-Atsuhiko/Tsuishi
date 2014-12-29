@@ -1,0 +1,1 @@
+../Gausian/data_check.R

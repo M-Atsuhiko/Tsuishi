@@ -1,0 +1,27 @@
+forall{
+    insert pas
+    insert borgka
+    insert cat
+    Ra = 100
+    cm = 0.8
+    g_pas = 2.5e-05
+    e_pas = -70
+}
+
+celsius = 37
+tau1 = 0.5
+tau2 = 2
+g_syn = 5e-04
+V_INIT = -70
+tstop = 100
+
+MIN_EPSP = 2
+strdef EPSP_ERROR_MESSAGE
+EPSP_ERROR_MESSAGE = "EPSP_ERROR!"
+
+objref UPPER_SYN_ACTIVATE_TIME,LOWER_SYN_ACTIVATE_TIME
+UPPER_SYN_ACTIVATE_TIME = new Vector()
+LOWER_SYN_ACTIVATE_TIME = new Vector()
+
+UPPER_SYN_ACTIVATE_TIME.append(5,-100,5,35)
+LOWER_SYN_ACTIVATE_TIME.append(-100,5,35,5)

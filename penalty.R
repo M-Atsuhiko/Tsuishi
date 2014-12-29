@@ -1,0 +1,1 @@
+../Gausian/penalty.R

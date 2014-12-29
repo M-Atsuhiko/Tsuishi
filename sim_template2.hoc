@@ -1,0 +1,138 @@
+//先にstrdefで input_file にファイル名を指定する
+
+objref Input_Data
+Input_Data = new File()
+Input_Data.ropen(input_file)
+
+objref CVODE
+CVODE = new CVode()
+CVODE.active(1)
+CVODE.atol(1e-5)
+
+N_Dend = Input_Data.scanvar()
+N_Upper_syn = Input_Data.scanvar()
+N_Lower_syn = Input_Data.scanvar()
+N_soma_Connect = Input_Data.scanvar()
+N_Connect = Input_Data.scanvar()
+
+create soma
+create dend[N_Dend]
+objref upper_synapse[N_Upper_syn]
+objref lower_synapse[N_Lower_syn]
+
+load_file("./sim_parameter.hoc")//ここ変数埋め込みになっている 
+//Upper_activate_timeとLower_activate_timeのVectorの設定も行っている
+//forallも行っている
+
+soma{
+    pt3dclear()
+    pt3dadd(Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar())
+    pt3dadd(Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar())
+    nseg = 1
+    diam = Input_Data.scanvar()
+    gcatbar_cat = Input_Data.scanvar()
+    gkabar_borgka = Input_Data.scanvar()
+}
+
+for i = 0, N_Dend - 1{
+    dend[i]{
+	pt3dclear()
+	pt3dadd(Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar())
+	pt3dadd(Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar(),Input_Data.scanvar())
+	nseg = Input_Data.scanvar()
+	gcatbar_cat = Input_Data.scanvar()
+	gkabar_borgka = Input_Data.scanvar()
+    }
+}
+
+for i = 0, N_soma_Connect - 1{
+    connect dend[Input_Data.scanvar()](0), soma(0.5)  //N_soma_connect soma_connect_index
+}
+
+for i = 0, N_Connect - 1{
+    connect dend[Input_Data.scanvar()](0), dend[Input_Data.scanvar()](1) //connect0 connenct1
+}
+
+for i = 0, N_Upper_syn - 1{//シナプスの種類もここで埋め込みになっている
+    dend[Input_Data.scanvar()] upper_synapse[i] = new Exp2Syn(Input_Data.scanvar())// upper_syn_dend upper_syn_rate
+}
+
+for i = 0, N_Lower_syn - 1{
+    dend[Input_Data.scanvar()] lower_synapse[i] = new Exp2Syn(Input_Data.scanvar()) // lower_syn_dend lower_syn_rate
+}
+
+Input_Data.close()
+
+//synapse活性化時間の設定
+objref upper_syn_stimulator
+objref lower_syn_stimulator
+
+upper_syn_stimulator = new NetStim(.5)
+upper_syn_stimulator.number = 1
+
+lower_syn_stimulator = new NetStim(.5)
+lower_syn_stimulator.number = 1
+
+objref connection[N_Upper_syn + N_Lower_syn]
+
+//シナプスの設定を書き換える
+
+for i = 0, N_Upper_syn - 1{
+   upper_synapse[i].tau1 = tau1
+   upper_synapse[i].tau2 = tau2
+   connection[i] = new NetCon(upper_syn_stimulator,upper_synapse[i],0,0,g_syn)
+}
+
+for i = 0, N_Lower_syn - 1{
+   lower_synapse[i].tau1 = tau1
+   lower_synapse[i].tau2 = tau2
+   connection[i + N_Upper_syn] = new NetCon(lower_syn_stimulator,lower_synapse[i],0,0,g_syn)
+}
+
+finitialize(V_INIT)
+fcurrent()
+
+//平衡電位の設定
+soma.e_pas = -70 + (soma.ica + soma.ik)/soma.g_pas
+
+for i = 0, N_Dend - 1{
+    dend[i].e_pas = -70 + (dend[i].ica + dend[i].ik)/dend[i].g_pas
+}
+
+strdef name
+objref fp_soma
+fp_soma = new File()
+
+for i = 0, 3 {
+    if(i == 0){
+	name = output_file_u //ここも変数埋め込みになっているので注意
+    }else if(i == 1){
+	name = output_file_l
+    }else if(i == 2){
+	name = output_file_ul
+    }else{
+	name = output_file_lu
+    }
+    
+    fp_soma.wopen(name)
+    
+//    print "output file: ",name
+//    print "Upper activate: ",UPPER_SYN_ACTIVATE_TIME.x[i]
+//    print "Lower activate: ",LOWER_SYN_ACTIVATE_TIME.x[i]
+    
+    upper_syn_stimulator.start = UPPER_SYN_ACTIVATE_TIME.x[i]
+    lower_syn_stimulator.start = LOWER_SYN_ACTIVATE_TIME.x[i]
+    
+    finitialize(V_INIT)              //finitializeでtest.modのINITIALが行われるらしい
+    fcurrent()
+    
+    //synの中の変数はsyn.aとかでアクセスできる
+    while(t < tstop){
+	fp_soma.printf("%f %f\n",t,soma.v(0.5))
+	fadvance()
+    }
+    
+//    printf("output -> %s\n",name)
+    
+    fp_soma.close()
+}
