@@ -12,14 +12,13 @@ source(paste(Dir,"Stem_diam.R",sep=""))
 source(paste(Dir,"calc_Conductance_amount.R",sep=""))
 
 WITH_K <- FALSE
-WITH_Ca <- FALSE
-RAND_SEED <- 1
-DELTA_T <- 20
+WITH_Ca <- TRUE
+RAND_SEED <- 2
+DELTA_T <- 30
 Function_ratio <- 75
 Conductance_ratio <- 0
 Morphology_ratio <- 100 - (Function_ratio + Conductance_ratio*(WITH_K || WITH_Ca))
-extra_prefix <- paste("Tsuishi_liner_",Function_ratio,"_",Conductance_ratio,sep="")
-
+extra_prefix <- paste("Tsuishi_",Function_ratio,"_",Conductance_ratio,sep="")
 
 if(WITH_K*WITH_Ca){
   name <- "k_ca"
@@ -54,12 +53,15 @@ for(i in GENERATION){
 
   TREE <- Best_Datas[[i]][["TREE"]]
   Params <- Best_Datas[[i]][["Params"]]
+  Best_Datas[[i]][["TREE"]] <- NULL
+  cat("original F:")
+  print(Best_Datas[[i]][["Estimate"]][2])
 
   filename <- paste("~/Desktop/",name,"_EPSP.eps",sep="")
 
   named_TREE <- set_Upper_or_Lower_or_Other(TREE)
-#  divided_TREE <- divid_and_set_conductance_liner(TREE,Params)
-  K_Ca_Conductace <- calc_Conductance_amount(TREE,WITH_K,WITH_Ca)
+  divided_TREE <- divid_and_set_conductance_liner(TREE,Params)
+  K_Ca_Conductace <- calc_Conductance_amount(TREE)
 
   N_Upper_synapse <- calc_number_synapse(named_TREE[["Upper_Dend"]])
   N_Lower_synapse <- calc_number_synapse(named_TREE[["Lower_Dend"]])
@@ -85,15 +87,15 @@ for(i in GENERATION){
     ##   WITH_Ca <- TRUE
     ##                                     #dev.off()
     ## }else{
-    print(TREE_simulation_function(TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)[1:2])
+    print(TREE_simulation_function(divided_TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)[1:2])
   }else{
     cat("This neuron can't simulation.\n")
   }
 
   if(WITH_K && WITH_Ca){
-    display_conductance_on_morphology(TREE,"Ca_conductance")
+    display_conductance_on_morphology(divided_TREE,"Ca_conductance")
   }else if(WITH_Ca){
-    display_conductance_on_morphology(TREE,"Ca_conductance")
+    display_conductance_on_morphology(divided_TREE,"Ca_conductance")
   }else if(WITH_K){
     display_conductance_on_morphology(TREE,"K_conductance")
   }else {

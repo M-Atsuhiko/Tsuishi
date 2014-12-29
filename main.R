@@ -30,13 +30,23 @@ for(ID_IND in 1:N_INDIVIDUAL){
     print("Error! The Parameter length is not justified!\n")
     cat("length of Params, Param Labels:",length(Params),length(Param_Labels),"\n")
   }
-    
-#        _                                _ 
-#    ___| |__   __ _ _ __   __ _  ___  __| |
-#   / __| '_ \ / _` | '_ \ / _` |/ _ \/ _` |
-#  | (__| | | | (_| | | | | (_| |  __/ (_| |
-#   \___|_| |_|\__,_|_| |_|\__, |\___|\__,_|
-#                          |___/
+
+  ## INDIVIDUAL_DATA <- list(ID_IND,
+  ##                         MORPHO_FILE_NAME[ID_IND],
+  ##                         SYNAPSE_FILE_NAME[ID_IND],
+  ##                         OUTPUT_UPPER_LOWER_FILE_NAME[ID_IND],
+  ##                         OUTPUT_LOWER_UPPER_FILE_NAME[ID_IND],
+  ##                         OUTPUT_UPPER_TEST_FILE_NAME[ID_IND],
+  ##                         OUTPUT_LOWER_TEST_FILE_NAME[ID_IND],
+  ##                         Params,
+  ##                         NULL,#SEED
+  ##                         NULL,#TREE
+  ##                         NULL,#Estimate
+  ##                         NULL,#Ratio
+  ##                         NULL, #Parent
+  ##                         NULL#RANK
+  ##                         )
+  ## names(INDIVIDUAL_DATA) <- MULTI_GENERATION_Labels
   
   INDIVIDUAL_DATA <- list(ID_IND,
                           MORPHO_FILE_NAME[ID_IND],
@@ -57,8 +67,7 @@ for(ID_IND in 1:N_INDIVIDUAL){
                           NULL,#RANK
                           "Initial"#Result
                           )
-#  names(INDIVIDUAL_DATA) <- MULTI_GENERATION_Labels
-  names(INDIVIDUAL_DATA) <- RERATIVE_MULTI_GENERATION_Labels
+ names(INDIVIDUAL_DATA) <- RERATIVE_MULTI_GENERATION_Labels
   MULTI_GENERATION[[ID_IND]] <- INDIVIDUAL_DATA
 }
 

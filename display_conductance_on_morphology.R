@@ -9,10 +9,10 @@ display_conductance_on_morphology <- function(TREE,conductance){
   rgl.clear()
 
   #3次元軸の生成
-  ## rgl.lines(c(-300,300),0,0,color="red")
-  ## rgl.lines(0,c(UPPER_SYNAPTIC_ZONE_Y,LOWER_SYNAPTIC_ZONE_Y),0,color="red")
-  ## rgl.lines(0,0,c(-300,300),color="red")
-  ## rgl.texts(c(300,0,0),c(0,UPPER_SYNAPTIC_ZONE_Y,0),c(0,0,300),text=c("x","y","z"),color="blue")
+  rgl.lines(c(-300,300),0,0,color="red")
+  rgl.lines(0,c(UPPER_SYNAPTIC_ZONE_Y,LOWER_SYNAPTIC_ZONE_Y),0,color="red")
+  rgl.lines(0,0,c(-300,300),color="red")
+  rgl.texts(c(300,0,0),c(0,UPPER_SYNAPTIC_ZONE_Y,0),c(0,0,300),text=c("x","y","z"),color="blue")
   
 #  display_synaptic_zone()
 

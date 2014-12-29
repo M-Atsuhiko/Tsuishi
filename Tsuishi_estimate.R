@@ -65,8 +65,9 @@ estimate <- function(result_file_ul,result_file_lu,result_file_test_u,result_fil
     
 #    cat("Ratio: ",Ratio,"\n")
 
-    if(Ratio > BAD_RATIO)#負の値を返す
+    if(Ratio > BAD_RATIO){#負の値を返す
       Estimate_Value <- -1*Ratio
+    }
     else{#ここが本来の評価式
 #      Estimate_Value <- 100 - 10*Ratio - ALPHA*(ALL_BRANCH_LENGTH/L0)
       #上の式だと、サイズによっては0未満の値になる
