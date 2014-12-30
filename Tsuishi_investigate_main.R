@@ -8,14 +8,15 @@ par(lwd=3,
 output_dir <- "./Tsuishi_Result/"
 
 WITH_K <- FALSE
-WITH_Ca <- FALSE
+WITH_Ca <- TRUE
 
-RAND_SEED <- 1:4
-DELTA_T <- seq(5,15,by=5)
-Function_ratio <- 70
+RAND_SEED <- 1:10
+#DELTA_T <- seq(5,30,by=5)
+DELTA_T <- 30
+Function_ratio <- 75
 Conductance_ratio <- 0
 Morphology_ratio <- 100 - (Function_ratio + Conductance_ratio)
-extra_prefix <- paste("Tsuishi_liner_",Function_ratio,"_",Conductance_ratio,sep="")
+extra_prefix <- paste("Tsuishi_",Function_ratio,"_",Conductance_ratio,sep="")
 
 if(WITH_K*WITH_Ca){
   name <- "k_ca"
@@ -36,6 +37,8 @@ TREE_length <- c()
 TREE_volume <- c()
 N_Upper_Syn <- c()
 N_Lower_Syn <- c()
+Upper_Diam <- c()
+Lower_Diam <- c()
 
 for(dt in DELTA_T){
   cat("Delta_T:",dt,"\n")
@@ -55,43 +58,55 @@ for(dt in DELTA_T){
   TREE_length <- cbind(TREE_length,
                        sapply(lapply(Datas,"[[","TREE"),sum_length))
 
-
   TREE_volume <- cbind(TREE_volume,
                        sapply(lapply(Datas,"[[","TREE"),calc_volume))
 
+  named_TREEs <- lapply(lapply(Datas,"[[","TREE"),set_Upper_or_Lower_or_Other)
+
+  Upper_Diam <- cbind(Upper_Diam,
+                      sapply(lapply(named_TREEs,"[[","Upper_Dend"),function(Dends){
+                        return(mean(sapply(Dends,function(Dend){
+                          return(Dend[[1]][["diam"]])
+                        })))
+                      }))
+
+  Lower_Diam <- cbind(Lower_Diam,
+                      sapply(lapply(named_TREEs,"[[","Lower_Dend"),function(Dends){
+                        return(mean(sapply(Dends,function(Dend){
+                          return(Dend[[1]][["diam"]])
+                        })))
+                      }))
+  
   N_Upper_Syn <- cbind(N_Upper_Syn,
-                       sapply(lapply(Datas,"[[","TREE"),
-                              function(TREE){
-                                Dends <- set_Upper_or_Lower_or_Other(TREE)[["Upper_Dend"]]
-                                return(sum(sapply(Dends,function(Dend){
-                                  return(sum(sapply(Dend,function(Branch){
-                                    if(is.matrix(Branch[["synapse"]])) return(nrow(Branch[["synapse"]]))
-                                    else return(0)
-                                    })))
-                                  })))
-                              }))
+                       sapply(lapply(named_TREEs,"[[","Upper_Dend"),function(Dends){
+                         return(sum(sapply(Dends,function(Dend){
+                           return(sum(sapply(Dend,function(Branch){
+                             if(is.matrix(Branch[["synapse"]])) return(nrow(Branch[["synapse"]]))
+                             else return(0)
+                           })))
+                         })))
+                       }))
 
   N_Lower_Syn <- cbind(N_Lower_Syn,
-                       sapply(lapply(Datas,"[[","TREE"),
-                              function(TREE){
-                                Dends <- set_Upper_or_Lower_or_Other(TREE)[["Lower_Dend"]]
-                                return(sum(sapply(Dends,function(Dend){
-                                  return(sum(sapply(Dend,function(Branch){
-                                    if(is.matrix(Branch[["synapse"]])) return(nrow(Branch[["synapse"]]))
-                                    else return(0)
-                                    })))
-                                  })))
-                              }))
+                       sapply(lapply(named_TREEs,"[[","Lower_Dend"),function(Dends){
+                         return(sum(sapply(Dends,function(Dend){
+                           return(sum(sapply(Dend,function(Branch){
+                             if(is.matrix(Branch[["synapse"]])) return(nrow(Branch[["synapse"]]))
+                             else return(0)
+                           })))
+                         })))
+                       }))
+
 }
+
+prefix <- paste(output_dir,name,"_",extra_prefix,"_",sep="")
 
 rowname <- expression(paste("Optimized ",Delta,"t [ms]"))
 
 legend <- c()
 
-output_dir <- paste(output_dir,"F",Function_ratio,"_",sep="")
-
 colname <- "F"
-Filename <- paste(output_dir,"Fs.eps",sep="")
+Filename <- paste(prefix,"Fs.eps",sep="")
 color <- c("red")
 plot_func(list(Fs),color,DELTA_T,Filename,
           colname,
@@ -99,7 +114,7 @@ plot_func(list(Fs),color,DELTA_T,Filename,
           legend)
 
 colname <- expression(paste("TREE Length [",mu,"m]"))
-Filename <- paste(output_dir,"TREE_length.eps",sep="")
+Filename <- paste(prefix,"TREE_length.eps",sep="")
 color <- c("red")
 plot_func(list(TREE_length),color,DELTA_T,Filename,
           colname,
@@ -107,15 +122,26 @@ plot_func(list(TREE_length),color,DELTA_T,Filename,
           legend)
 
 colname <- expression(paste("TREE Volume [",mu,m^3,"]"))
-Filename <- paste(output_dir,"TREE_volume.eps",sep="")
+Filename <- paste(prefix,"TREE_volume.eps",sep="")
 color <- c("red")
 plot_func(list(TREE_volume),color,DELTA_T,Filename,
           colname,
           rowname,
           legend)
 
+colname <- expression(paste("Stem diam [",mu,"m]"))
+Filename <- paste(prefix,"Stem_diam.eps",sep="")
+color <- c("red","blue")
+legend <- cbind(c("Red Branch","Blue Branch"),
+                c("red","blue"),
+                c("solid","solid"))
+plot_func(list(Upper_Diam,Lower_Diam),color,DELTA_T,Filename,
+          colname,
+          rowname,
+          legend)
+
 colname <-paste("Number of Synapses")
-Filename <- paste(output_dir,"Number_synapse.eps",sep="")
+Filename <- paste(prefix,"Number_synapse.eps",sep="")
 color <- c("red","blue")
 legend <- cbind(c("Red Synapse","Blue Synapse"),
                 c("red","blue"),
