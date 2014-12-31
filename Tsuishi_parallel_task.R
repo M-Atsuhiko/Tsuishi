@@ -24,7 +24,7 @@ parallel_task <- function(Individual_Data){
   
   if(simulation_or_not){
 
-    divided_TREE <- divid_and_set_conductance_liner(TREE,Params)
+    divided_TREE <- divid_and_set_conductance(TREE,NULL)
 
     Individual_Data[["TREE_Volume"]] <- calc_volume(divided_TREE)
 

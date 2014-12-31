@@ -49,14 +49,13 @@ source("./canSimulation.R")
 source("./set_Upper_or_Lower_or_Other.R")
 #[calc_Conductance_ratio.R]   : TREEのコンダクタンス分布量の最大量に対する比を計算する関数
 source("./calc_Conductance_ratio.R")
-#[divid_and_set_conductance_liner.R]     
-source("./Tsuishi_divid_and_set_conductance.R")
+#[Tsuishi_divid_and_set_conductance_liner.R]     
+source("./Tsuishi_divid_and_set_conductance_liner.R")
 #[Morpho_penalty.R]     
 source("./Morpho_penalty.R")
 #[calc_Vollume.R]             : TREEの体積を計算する関数  
 source("./calc_volume.R")
 
-  
 #        _                                _ 
 #    ___| |__   __ _ _ __   __ _  ___  __| |
 #   / __| '_ \ / _` | '_ \ / _` |/ _ \/ _` |
@@ -71,6 +70,7 @@ source("./calc_Conductance_amount.R")
 source("./Result_Estimate.R")
 
 ##主要な関数をコンパイルしておく
+divid_and_set_conductance <- cmpfun(Tsuishi_divid_and_set_conductance_liner)#ここ注意
 Param_init <- cmpfun(Param_init)
 make_TREE <- cmpfun(make_TREE)
 set_coordinate <- cmpfun(set_coordinate)
@@ -86,8 +86,6 @@ sum_length <- cmpfun(sum_length)
 canSimulation <- cmpfun(canSimulation)
 set_Upper_or_Lower_or_Other <- cmpfun(set_Upper_or_Lower_or_Other)
 calc_Conductance_ratio <- cmpfun(calc_Conductance_ratio)
-divid_and_set_conductance_liner <- cmpfun(divid_and_set_conductance_liner)
-
 return_result <- cmpfun(return_result)
 calc_Conductance_amount <- cmpfun(calc_Conductance_amount)
 Result_Estimate <- cmpfun(Result_Estimate)

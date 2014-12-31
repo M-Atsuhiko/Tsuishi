@@ -54,13 +54,11 @@ for(i in GENERATION){
   TREE <- Best_Datas[[i]][["TREE"]]
   Params <- Best_Datas[[i]][["Params"]]
   Best_Datas[[i]][["TREE"]] <- NULL
-  cat("original F:")
-  print(Best_Datas[[i]][["Estimate"]][2])
 
   filename <- paste("~/Desktop/",name,"_EPSP.eps",sep="")
 
   named_TREE <- set_Upper_or_Lower_or_Other(TREE)
-  divided_TREE <- divid_and_set_conductance_liner(TREE,Params)
+  divided_TREE <- divid_and_set_conductance(TREE,Params)
   K_Ca_Conductace <- calc_Conductance_amount(TREE)
 
   N_Upper_synapse <- calc_number_synapse(named_TREE[["Upper_Dend"]])
