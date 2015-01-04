@@ -20,17 +20,10 @@ parallel_task <- function(Individual_Data){
   TREE <- lapply(TREE,set_synapse)
   
   Individual_Data[["TREE"]] <- TREE
-  simulation_or_not <- canSimulation(TREE)
   
-  if(simulation_or_not){
+  if(canSimulation(TREE)){
 
-    divided_TREE <- divid_and_set_conductance(TREE,NULL)
-
-    Individual_Data[["TREE_Volume"]] <- calc_volume(divided_TREE)
-
-    Conductance_amount <- calc_Conductance_amount(divided_TREE)
-    Individual_Data[["K_Amount"]] <- Conductance_amount[1]
-    Individual_Data[["Ca_Amount"]] <- Conductance_amount[2]
+    divided_TREE <- divid_and_set_conductance(TREE,Params)
 
     make_NEURON_morpho_conductance_data(divided_TREE,Morpho_file)
     make_NEURON_synapse_data(divided_TREE,Synapse_file)
@@ -58,18 +51,24 @@ parallel_task <- function(Individual_Data){
        !(file.exists(Output_lower_test))){
       cat("ERROR: NEURON output has some error!\n")
     }
-  }
                                         # 適応度計算
                                         # EPSEが小さくペナルティを与えることになった場合はSimul_EstimateがNAになっている
-  Simul_Estimate <- return_result(Output_upper_lower,
-                                  Output_lower_upper,
-                                  Output_upper_test,
-                                  Output_lower_test,
-                                  V_INIT,
-                                  simulation_or_not)
+    Simul_Estimate <- estimate(Output_upper_lower,
+                               Output_lower_upper,
+                               Output_upper_test,
+                               Output_lower_test,
+                               V_INIT,
+                               divided_TREE)
 
-  Individual_Data[["Ratio"]] <- Simul_Estimate[[1]]
-  Individual_Data[["Result"]] <- Simul_Estimate[[2]]
+    if(is.na(Simul_Estimate[1])){
+      Simul_Estimate[1] <- penalty(1,EPSP_PENALTY_MIEW,EPSP_PENALTY_SIGMA)
+    }
+  }else{#シミュレーションのできない(上下のシナプティックゾーンにシナプスを作成できなかった)個体の場合
+    Simul_Estimate <- c(Morpho_penalty(TREE),-1)
+  }
+  
+  Individual_Data[["Estimate"]] <- Simul_Estimate #評価値を代入
+  Individual_Data[["Ratio"]] <- Simul_Estimate[2]
 
   return(Individual_Data)
 }
