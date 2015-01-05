@@ -14,7 +14,7 @@ source(paste(Dir,"calc_Conductance_amount.R",sep=""))
 WITH_K <- FALSE
 WITH_Ca <- TRUE
 RAND_SEED <- 1
-DELTA_T <- 10
+DELTA_T <- 15
 Function_ratio <- 75
 Conductance_ratio <- 0
 Morphology_ratio <- 100 - (Function_ratio + Conductance_ratio*(WITH_K || WITH_Ca))
