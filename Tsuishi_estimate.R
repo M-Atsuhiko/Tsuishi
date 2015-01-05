@@ -69,14 +69,14 @@ estimate <- function(result_file_ul,result_file_lu,result_file_test_u,result_fil
       Estimate_Value <- -1*Ratio
     }
     else{#ここが本来の評価式
-#      Estimate_Value <- 100 - 10*Ratio - ALPHA*(ALL_BRANCH_LENGTH/L0)
+      Estimate_Value <- 100 - 10*Ratio - ALPHA*(sum_length(TREE)/L0)
       #上の式だと、サイズによっては0未満の値になる
       #評価関数変更
       
-      Func_minus <- Function_ratio*(1 - (F_MAX^(-1))/Ratio)
-      Morpho_minus <- Morphology_ratio*(1 - L0/sum_length(TREE))
+      ## Func_minus <- Function_ratio*(1 - (F_MAX^(-1))/Ratio)
+      ## Morpho_minus <- Morphology_ratio*(1 - L0/sum_length(TREE))
       
-      Estimate_Value <- 100 - Func_minus - Morpho_minus
+      ## Estimate_Value <- 100 - Func_minus - Morpho_minus
     }
   }
   return(c(Estimate_Value,Ratio^(-1)))
