@@ -109,7 +109,6 @@ if(THIS_IS_TEST){
   ES_RAMDA                       <- 5                      # 次世代生成に用いる優秀な個体の数
   N_INDIVIDUAL                   <- 20                     # 1世代の個体数
   SELECT_PROB                    <- set_select_prob(ES_RAMDA,1)
-  WITH_Ca <- TRUE
 }
 ###\テストのための変更
 
