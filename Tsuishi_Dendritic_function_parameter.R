@@ -40,8 +40,8 @@ source("./output_results.R")
 #[make_simul_parameter]       : シミュレーションで用いるパラメータのファイルを作成する関数
 source("./make_simul_parameter.R")
 #[parallel_task]              : シミュレーションを行うための関数 
-#source("./Tsuishi_parallel_task.R")
-source("./Tsuishi_parallel_task_rerative.R")
+source("./Tsuishi_parallel_task.R")
+#source("./Tsuishi_parallel_task_rerative.R")
 #[sum_length]                 : 木の大きさ(Dendriteの長さの総和)を返す関数
 source("./sum_length.R")
 #[canSimulation.R]            : 木の大きさ(Dendriteの長さの総和)を返す関数
