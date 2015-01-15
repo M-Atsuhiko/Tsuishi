@@ -31,23 +31,6 @@ for(ID_IND in 1:N_INDIVIDUAL){
     cat("length of Params, Param Labels:",length(Params),length(Param_Labels),"\n")
   }
 
-  INDIVIDUAL_DATA <- list(ID_IND,
-                          MORPHO_FILE_NAME[ID_IND],
-                          SYNAPSE_FILE_NAME[ID_IND],
-                          OUTPUT_UPPER_LOWER_FILE_NAME[ID_IND],
-                          OUTPUT_LOWER_UPPER_FILE_NAME[ID_IND],
-                          OUTPUT_UPPER_TEST_FILE_NAME[ID_IND],
-                          OUTPUT_LOWER_TEST_FILE_NAME[ID_IND],
-                          Params,
-                          NULL,#SEED
-                          NULL,#TREE
-                          NULL,#Estimate
-                          NULL,#Ratio
-                          NULL, #Parent
-                          NULL#RANK
-                          )
-  names(INDIVIDUAL_DATA) <- MULTI_GENERATION_Labels
-  
   ## INDIVIDUAL_DATA <- list(ID_IND,
   ##                         MORPHO_FILE_NAME[ID_IND],
   ##                         SYNAPSE_FILE_NAME[ID_IND],
@@ -58,16 +41,33 @@ for(ID_IND in 1:N_INDIVIDUAL){
   ##                         Params,
   ##                         NULL,#SEED
   ##                         NULL,#TREE
-  ##                         NULL,#TREE_volume
-  ##                         NULL,#Ca_Amount
-  ##                         NULL,#K_Amount
   ##                         NULL,#Estimate
   ##                         NULL,#Ratio
   ##                         NULL, #Parent
-  ##                         NULL,#RANK
-  ##                         "Initial"#Result
+  ##                         NULL#RANK
   ##                         )
-  ## names(INDIVIDUAL_DATA) <- RERATIVE_MULTI_GENERATION_Labels
+  ## names(INDIVIDUAL_DATA) <- MULTI_GENERATION_Labels
+  
+  INDIVIDUAL_DATA <- list(ID_IND,
+                          MORPHO_FILE_NAME[ID_IND],
+                          SYNAPSE_FILE_NAME[ID_IND],
+                          OUTPUT_UPPER_LOWER_FILE_NAME[ID_IND],
+                          OUTPUT_LOWER_UPPER_FILE_NAME[ID_IND],
+                          OUTPUT_UPPER_TEST_FILE_NAME[ID_IND],
+                          OUTPUT_LOWER_TEST_FILE_NAME[ID_IND],
+                          Params,
+                          NULL,#SEED
+                          NULL,#TREE
+                          NULL,#TREE_volume
+                          NULL,#Ca_Amount
+                          NULL,#K_Amount
+                          NULL,#Estimate
+                          NULL,#Ratio
+                          NULL, #Parent
+                          NULL,#RANK
+                          "Initial"#Result
+                          )
+  names(INDIVIDUAL_DATA) <- RERATIVE_MULTI_GENERATION_Labels
   
   MULTI_GENERATION[[ID_IND]] <- INDIVIDUAL_DATA
 }
@@ -103,7 +103,7 @@ for(I_GENER in Start_GENER:MAX_GENERATION){
 #  | (__| | | | (_| | | | | (_| |  __/ (_| |
 #   \___|_| |_|\__,_|_| |_|\__, |\___|\__,_|
 #                          |___/            
-#  MULTI_GENERATION <- Result_Estimate(MULTI_GENERATION)# 12/28変更 Rerativeを試すため
+  MULTI_GENERATION <- Result_Estimate(MULTI_GENERATION)
 
   
   

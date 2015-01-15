@@ -11,12 +11,12 @@ source(paste(Dir,"calc_contraction.R",sep=""))
 source(paste(Dir,"Stem_diam.R",sep=""))
 source(paste(Dir,"calc_Conductance_amount.R",sep=""))
 
-WITH_K <- TRUE
-WITH_Ca <- FALSE
+WITH_K <- FALSE
+WITH_Ca <- TRUE
 RAND_SEED <- 1
-DELTA_T <- 10
-Function_ratio <- 90
-Conductance_ratio <- 0
+DELTA_T <- 25
+Function_ratio <- 75
+Conductance_ratio <- 5
 Morphology_ratio <- 100 - (Function_ratio + Conductance_ratio*(WITH_K || WITH_Ca))
 extra_prefix <- paste("Rerative_liner_",Function_ratio,"_",Conductance_ratio,sep="")
 
