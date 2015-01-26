@@ -11,14 +11,14 @@ source(paste(Dir,"calc_contraction.R",sep=""))
 source(paste(Dir,"Stem_diam.R",sep=""))
 source(paste(Dir,"calc_Conductance_amount.R",sep=""))
 
-WITH_K <- TRUE
+WITH_K <- FALSE
 WITH_Ca <- FALSE
 RAND_SEED <- 1
-DELTA_T <- 5
-Function_ratio <- 90
+DELTA_T <- 15
+Function_ratio <- 75
 Conductance_ratio <- 0
 Morphology_ratio <- 100 - (Function_ratio + Conductance_ratio*(WITH_K || WITH_Ca))
-extra_prefix <- paste("Tsuishi_liner_",Function_ratio,"_",Conductance_ratio,sep="")
+extra_prefix <- paste("Tsuishi_alfa_05_",Function_ratio,"_",Conductance_ratio,sep="")
 
 if(WITH_K*WITH_Ca){
   name <- "k_ca"
@@ -53,6 +53,7 @@ for(i in GENERATION){
 
   TREE <- Best_Datas[[i]][["TREE"]]
   Params <- Best_Datas[[i]][["Params"]]
+  
   Best_Datas[[i]][["TREE"]] <- NULL
 
   filename <- paste("~/Desktop/",name,"_EPSP.eps",sep="")
