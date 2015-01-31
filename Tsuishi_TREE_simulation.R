@@ -3,6 +3,8 @@ source("display_conductance_on_morphology.R")
 source("TREE_simulation_function.R")
 source("./display_morphology.R")
 source("./display_synapse.R")
+source("TREE_2simulations_K.R")
+source("TREE_2simulations_Ca.R")
 
 Dir <- "./Result_investigation/"
 source(paste(Dir,"calc_syn_length_diameter.R",sep=""))
@@ -12,11 +14,11 @@ source(paste(Dir,"Stem_diam.R",sep=""))
 source(paste(Dir,"calc_Conductance_amount.R",sep=""))
 
 WITH_K <- TRUE
-WITH_Ca <- TRUE
+WITH_Ca <- FALSE
 RAND_SEED <- 1
-DELTA_T <- 20
+DELTA_T <- 5
 Function_ratio <- 75
-Conductance_ratio <- 5
+Conductance_ratio <- 0
 Morphology_ratio <- 100 - (Function_ratio + Conductance_ratio*(WITH_K || WITH_Ca))
 extra_prefix <- paste("Rerative_liner_",Function_ratio,"_",Conductance_ratio,sep="")
 
@@ -77,16 +79,12 @@ for(i in GENERATION){
       round(100*K_Ca_Conductace[2]/K_Ca_Conductace[4],digits=3),"(%)\n")
 
   if(N_Upper_synapse > 0 && N_Lower_synapse > 0){
-    ## if(WITH_Ca && !WITH_K){
-    ##                                     #postscript("WITH_ca_NO_ca_result.eps",horizontal=FALSE)
-    ##   par(mfcol=c(1,2))
-    ##   print(TREE_simulation_function(TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)[1:2])
-    ##   WITH_Ca <- FALSE
-    ##   print(TREE_simulation_function(TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)[1:2])
-    ##   WITH_Ca <- TRUE
-    ##                                     #dev.off()
-    ## }else{
-    print(TREE_simulation_function(divided_TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)[1:2])
+    if(WITH_K)
+      TREE_2simulations_K(divided_TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)
+    else if(WITH_Ca)
+      TREE_2simulations_Ca(divided_TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)
+    else
+      print(TREE_simulation_function(divided_TREE,DELTA_T,filename,WITH_K,WITH_Ca,Params)[1:2])
   }else{
     cat("This neuron can't simulation.\n")
   }
@@ -104,5 +102,5 @@ for(i in GENERATION){
 #  readline("next?")
 }
 
-rgl.snapshot(file=paste("~/Desktop/",name,"_liner_TREE_sample_dt",DELTA_T,"_C",Conductance_ratio,".png",sep=""))
-dev.copy2eps(file=paste("~/Desktop/",name,"_liner_somaV_dt",DELTA_T,"_C",Conductance_ratio,".eps",sep=""))
+#rgl.snapshot(file=paste("~/Desktop/",name,"_liner_TREE_sample_dt",DELTA_T,"_C",Conductance_ratio,".png",sep=""))
+#dev.copy2eps(file=paste("~/Desktop/",name,"_liner_somaV_dt",DELTA_T,"_C",Conductance_ratio,".eps",sep=""))
